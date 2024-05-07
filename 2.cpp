@@ -16,7 +16,7 @@ struct Node {
 };
 
 // A* algorithm function
-int AStar(vector<vector<int>>& graph, vector<int>& heuristic, int start, int goal) {
+int AStar(vector<vector<pair<int, int>>>& graph, vector<int>& heuristic, int start, int goal) {
     int n = graph.size();
 
     // Priority queue to store nodes to be explored, ordered by f_cost
@@ -46,15 +46,18 @@ int AStar(vector<vector<int>>& graph, vector<int>& heuristic, int start, int goa
         visited[current.index] = true;
 
         // Expand current node
-        for (int neighbor = 0; neighbor < n; ++neighbor) {
-            // Check if there is a connection from current node to neighbor and neighbor is not visited
-            if (graph[current.index][neighbor] != 0 && !visited[neighbor]) {
-                int g_cost = current.g_cost + graph[current.index][neighbor];
-                int h_cost = heuristic[neighbor];
+        for (const auto& neighbor : graph[current.index]) {
+            int neighborIndex = neighbor.first;
+            int edgeWeight = neighbor.second;
+            
+            // Check if neighbor is not visited
+            if (!visited[neighborIndex]) {
+                int g_cost = current.g_cost + edgeWeight;
+                int h_cost = heuristic[neighborIndex];
                 int f_cost = g_cost + h_cost;
 
                 // Add neighbor to open list
-                openList.push(Node(neighbor, g_cost, h_cost));
+                openList.push(Node(neighborIndex, g_cost, h_cost));
             }
         }
     }
@@ -68,12 +71,17 @@ int main() {
     cout << "Enter the number of nodes: ";
     cin >> n;
 
-    vector<vector<int>> graph(n, vector<int>(n, 0));
+    vector<vector<pair<int, int>>> graph(n);
 
-    cout << "Enter the adjacency matrix:" << endl;
+    cout << "Enter the adjacency list (node index, edge weight, space-separated):" << endl;
     for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            cin >> graph[i][j];
+        cout << "Enter neighbors of node " << i << ": ";
+        int numNeighbors;
+        cin >> numNeighbors;
+        for (int j = 0; j < numNeighbors; ++j) {
+            int neighbor, weight;
+            cin >> neighbor >> weight;
+            graph[i].push_back({neighbor, weight});
         }
     }
 

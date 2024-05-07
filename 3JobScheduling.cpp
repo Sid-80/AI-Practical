@@ -1,10 +1,8 @@
-// C++ code for the above approach
-
 #include <algorithm>
 #include <iostream>
 using namespace std;
 
-// A structure to represent a job
+
 struct Job {
 
 	char id; // Job Id

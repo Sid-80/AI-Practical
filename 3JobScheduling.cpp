@@ -1,54 +1,73 @@
-#include <algorithm>
-#include <iostream>
+// C++ code for the above approach
+
+#include <bits/stdc++.h>
 using namespace std;
 
-
+// A structure to represent a job
 struct Job {
 
 	char id; // Job Id
 	int dead; // Deadline of job
-	int profit; // Profit if job is over before or on
+	int profit; // Profit earned if job is completed before
 				// deadline
 };
-
-// Comparator function for sorting jobs
-bool comparison(Job a, Job b)
-{
-	return (a.profit > b.profit);
-}
 
 // Returns maximum profit from jobs
 void printJobScheduling(Job arr[], int n)
 {
-	sort(arr, arr + n, comparison);
+	vector<Job> result;
+	sort(arr, arr + n,
+		[](Job a, Job b) { return a.dead < b.dead; });
 
-	int result[n]; 
-	bool slot[n]; 
+	// set a custom priority queue
+	priority_queue<Job, vector<Job>, function<bool(const Job&, const Job&)>> pq(
+		[](const Job& A,const Job& B){
+			return A.profit < B.profit;
+		}
+	);
 
-	for (int i = 0; i < n; i++)
-		slot[i] = false;
+	for (int i = n - 1; i >= 0; i--) {
+		int slot_available;
+	
+		// we count the slots available between two jobs
+		if (i == 0) {
+			slot_available = arr[i].dead;
+		}
+		else {
+			slot_available = arr[i].dead - arr[i - 1].dead;
+		}
 
-	for (int i = 0; i < n; i++) {
-
-		for (int j = min(n, arr[i].dead) - 1; j >= 0; j--) {
-			if (slot[j] == false) {
-				result[j] = i; 
-				slot[j] = true; 
-				break;
-			}
+		// include the profit of job(as priority),
+		// deadline and job_id in maxHeap
+		pq.push(arr[i]);
+	
+		while (slot_available > 0 && pq.size() > 0) {
+		
+			// get the job with the most profit
+			Job job = pq.top();
+			pq.pop();
+		
+			// reduce the slots
+			slot_available--;
+		
+			// add it to the answer
+			result.push_back(job);
 		}
 	}
 
-	// Print the result
-	for (int i = 0; i < n; i++)
-		if (slot[i])
-			cout << arr[result[i]].id << " ";
+	// sort the result based on the deadline
+	sort(result.begin(), result.end(),
+		[&](Job a, Job b) { return a.dead < b.dead; });
+
+	// print the result
+	for (int i = 0; i < result.size(); i++)
+		cout << result[i].id << ' ';
+	cout << endl;
 }
 
 // Driver's code
 int main()
 {
-    //            JobId deadline Profit
 	Job arr[] = { { 'a', 2, 100 },
 				{ 'b', 1, 19 },
 				{ 'c', 2, 27 },
@@ -59,7 +78,9 @@ int main()
 	cout << "Following is maximum profit sequence of jobs "
 			"\n";
 
-
+	// Function call
 	printJobScheduling(arr, n);
 	return 0;
 }
+
+// This code is contributed By Reetu Raj Dubey

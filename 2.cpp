@@ -12,7 +12,12 @@ struct Node {
     int g_cost; // Cost from start node to this node
     int h_cost; // Heuristic cost (estimated cost from this node to goal node)
     int f_cost; // f(n) = g(n) + h(n)
-    Node(int i, int g, int h) : index(i), g_cost(g), h_cost(h), f_cost(g + h) {}
+    Node(int i, int g, int h){
+        this->index = i;
+        this->g_cost = g;
+        this->h_cost = h;
+        this->f_cost = g + h;
+    }
 };
 
 // A* algorithm function

@@ -71,7 +71,6 @@ int main(){
     addEdge(adjList, 2, 0);
     addEdge(adjList, 2, 1);
 
-
     bfs(adjList,0,vertices);
 
     cout<<endl;

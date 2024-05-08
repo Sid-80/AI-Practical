@@ -1,0 +1,33 @@
+#!/bin/bash
+# Use this for your user data (script from top to bottom)
+# install httpd (Linux 2 version)
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+
+
+import flask
+
+# If entrypoint is not defined in app.yaml, App Engine will look for an app
+# called app in main.py.
+app = flask.Flask(_name_)
+
+
+@app.get("/")
+def hello():
+    """Return a friendly HTTP greeting."""
+    return "Hello World!\n"
+
+
+if _name_ == "_main_":
+    # Used when running locally only. When deploying to Google App
+    # Engine, a webserver process such as Gunicorn will serve the app. This
+    # can be configured by adding an entrypoint to app.yaml.
+    app.run(host="localhost", port=8080, debug=True)
+
+
+gcloud auth list
+
+cloudshell edit file_name.py
